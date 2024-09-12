@@ -1,0 +1,293 @@
+<html><head><base href="https://math-adventure.edu/grade7/addition-subtraction/" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MathVerse: Galactic Number Challenge</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Exo+2:wght@300;600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --gradient-bg: linear-gradient(135deg, #FF1493, #FF69B4, #4169E1);
+        --neon-glow: 0 0 10px rgba(255, 105, 180, 0.7), 0 0 20px rgba(255, 105, 180, 0.5), 0 0 30px rgba(255, 105, 180, 0.3);
+    }
+    body {
+        font-family: 'Exo 2', sans-serif;
+        background: var(--gradient-bg);
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        overflow: hidden;
+        color: #ffffff;
+    }
+    #game-container {
+        background-color: rgba(0, 0, 0, 0.7);
+        border-radius: 20px;
+        box-shadow: 0 0 30px rgba(255, 105, 180, 0.5);
+        padding: 30px;
+        text-align: center;
+        max-width: 800px;
+        width: 90%;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255, 255, 255, 0.1);
+    }
+    h1 {
+        font-family: 'Orbitron', sans-serif;
+        color: #ffffff;
+        font-size: 3em;
+        margin-bottom: 20px;
+        text-shadow: var(--neon-glow);
+        letter-spacing: 2px;
+    }
+    #problem {
+        font-size: 2.5em;
+        margin-bottom: 30px;
+        color: #FF69B4;
+        font-weight: bold;
+        text-shadow: 0 0 10px rgba(255, 105, 180, 0.7);
+    }
+    #answer {
+        font-size: 1.5em;
+        padding: 15px;
+        width: 150px;
+        border: 3px solid #FF69B4;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #ffffff;
+        text-align: center;
+    }
+    #answer:focus {
+        outline: none;
+        box-shadow: 0 0 15px #FF69B4;
+    }
+    #submit {
+        font-size: 1.2em;
+        padding: 15px 30px;
+        background: linear-gradient(45deg, #FF1493, #4169E1);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-weight: bold;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    #submit:hover {
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(255, 105, 180, 0.7);
+    }
+    #score, #timer, #level {
+        font-size: 1.2em;
+        margin: 15px 0;
+        color: #FF69B4;
+        text-shadow: 0 0 5px rgba(255, 105, 180, 0.5);
+    }
+    #spaceship {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 20px;
+    }
+    @keyframes celebration {
+        0% { transform: scale(1) rotate(0deg); }
+        25% { transform: scale(1.2) rotate(-5deg); }
+        50% { transform: scale(1.2) rotate(5deg); }
+        75% { transform: scale(1.2) rotate(-5deg); }
+        100% { transform: scale(1) rotate(0deg); }
+    }
+    .celebrate {
+        animation: celebration 0.7s ease-in-out;
+    }
+    #progress-bar {
+        width: 100%;
+        height: 20px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        margin-top: 20px;
+        overflow: hidden;
+    }
+    #progress {
+        width: 0%;
+        height: 100%;
+        background: linear-gradient(90deg, #FF1493, #4169E1);
+        transition: width 0.5s ease-in-out;
+        box-shadow: 0 0 10px rgba(255, 105, 180, 0.7);
+    }
+    .shake {
+        animation: shake 0.5s ease-in-out;
+    }
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-5px); }
+        75% { transform: translateX(5px); }
+    }
+    #stars {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+    }
+</style>
+</head>
+<body>
+    <div id="stars"></div>
+    <div id="game-container">
+        <h1>MathVerse: Galactic Number Challenge</h1>
+        <svg id="spaceship" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="shipGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#FF1493;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#4169E1;stop-opacity:1" />
+                </linearGradient>
+            </defs>
+            <path d="M50 10 L80 80 L50 65 L20 80 Z" fill="url(#shipGradient)" />
+            <circle cx="50" cy="40" r="10" fill="#FF69B4" />
+            <path d="M30 75 Q50 95 70 75" stroke="#4169E1" stroke-width="3" fill="none" />
+        </svg>
+        <div id="problem"></div>
+        <input type="number" id="answer" autofocus>
+        <button id="submit">Calculate</button>
+        <div id="score">Score: 0</div>
+        <div id="timer">Time: 60s</div>
+        <div id="level">Level: 1</div>
+        <div id="progress-bar">
+            <div id="progress"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
+    <script>
+        let score = 0;
+        let level = 1;
+        let timer = 60;
+        let currentProblem = {};
+        let interval;
+
+        const sounds = {
+            correct: new Howl({
+                src: ['https://math-adventure.edu/sounds/correct.mp3']
+            }),
+            wrong: new Howl({
+                src: ['https://math-adventure.edu/sounds/wrong.mp3']
+            }),
+            levelUp: new Howl({
+                src: ['https://math-adventure.edu/sounds/level-up.mp3']
+            })
+        };
+
+        function generateProblem() {
+            const operations = ['+', '-'];
+            const operation = operations[Math.floor(Math.random() * operations.length)];
+            let num1, num2;
+
+            if (operation === '+') {
+                num1 = Math.floor(Math.random() * (50 * level)) + 1;
+                num2 = Math.floor(Math.random() * (50 * level)) + 1;
+            } else {
+                num1 = Math.floor(Math.random() * (50 * level)) + 51;
+                num2 = Math.floor(Math.random() * (25 * level)) + 1;
+            }
+
+            currentProblem = {
+                num1: num1,
+                num2: num2,
+                operation: operation,
+                answer: operation === '+' ? num1 + num2 : num1 - num2
+            };
+
+            document.getElementById('problem').textContent = `${num1} ${operation} ${num2} = ?`;
+        }
+
+        function checkAnswer() {
+            const userAnswer = parseInt(document.getElementById('answer').value);
+            if (userAnswer === currentProblem.answer) {
+                score++;
+                sounds.correct.play();
+                document.getElementById('score').textContent = `Score: ${score}`;
+                document.getElementById('spaceship').classList.add('celebrate');
+                setTimeout(() => {
+                    document.getElementById('spaceship').classList.remove('celebrate');
+                }, 700);
+                updateProgress();
+            } else {
+                sounds.wrong.play();
+                document.getElementById('game-container').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('game-container').classList.remove('shake');
+                }, 500);
+            }
+            document.getElementById('answer').value = '';
+            generateProblem();
+        }
+
+        function updateProgress() {
+            const progress = (score % 10) * 10;
+            document.getElementById('progress').style.width = `${progress}%`;
+            if (score > 0 && score % 10 === 0) {
+                levelUp();
+            }
+        }
+
+        function levelUp() {
+            level++;
+            sounds.levelUp.play();
+            document.getElementById('level').textContent = `Level: ${level}`;
+            timer += 30;
+            updateTimer();
+        }
+
+        function updateTimer() {
+            document.getElementById('timer').textContent = `Time: ${timer}s`;
+            if (timer <= 0) {
+                endGame();
+            }
+        }
+
+        function startTimer() {
+            interval = setInterval(() => {
+                timer--;
+                updateTimer();
+            }, 1000);
+        }
+
+        function endGame() {
+            clearInterval(interval);
+            alert(`Game Over! Your final score is ${score}`);
+            location.reload();
+        }
+
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.style.position = 'absolute';
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.width = `${Math.random() * 3}px`;
+                star.style.height = star.style.width;
+                star.style.backgroundColor = 'white';
+                star.style.borderRadius = '50%';
+                star.style.opacity = Math.random();
+                star.style.animation = `twinkle ${Math.random() * 5 + 5}s linear infinite`;
+                starsContainer.appendChild(star);
+            }
+        }
+
+        document.getElementById('submit').addEventListener('click', checkAnswer);
+        document.getElementById('answer').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        createStars();
+        generateProblem();
+        startTimer();
+    </script>
+</body>
+</html>
